@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Entry
+from .models import Entry , Comment
 # Create your tests here.
 from django.contrib.auth import get_user_model
 from django_webtest import WebTest
@@ -61,11 +61,12 @@ class EntryViewTest(WebTest):
     def setUp(self):
         self.user = get_user_model().objects.create(username='some_user')
         self.entry = Entry.objects.create(title='1-title', body='1-body',
-                                          author=self.user)
+        author=self.user)
 
     def test_basic_view(self):
         response = self.client.get(self.entry.get_absolute_url())
         self.assertEqual(response.status_code, 200)
+
     def test_title_in_entry(self):
         response = self.client.get(self.entry.get_absolute_url())
         self.assertContains(response, self.entry.title)
@@ -73,3 +74,9 @@ class EntryViewTest(WebTest):
     def test_body_in_entry(self):
         response = self.client.get(self.entry.get_absolute_url())
         self.assertContains(response, self.entry.body)
+
+class CommentModelTest(TestCase):
+
+    def test_string_representation(self):
+        comment = Comment(body="My comment body")
+        self.assertEqual(str(comment), "My comment body")
